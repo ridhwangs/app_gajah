@@ -276,7 +276,7 @@
                                 </tr>
                                 <tr>
                                     <td>Cara Pembayaran</td>
-                                    <td colspan="3">: <?= $row_master->MethodOfPayment7; ?></td>
+                                    <td colspan="3">: <?= $row_master->MethodOfPayment7; ?> (<?= $row_master->kasir; ?>)</td>
                                     <td colspan="2">DPP</td>
                                     <td class="w3-right-align"><?= number_format($row_master->dpp) ?></td>
                                 </tr>
