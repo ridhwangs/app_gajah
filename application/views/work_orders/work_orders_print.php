@@ -127,7 +127,7 @@
     <table border='0' width="100%" cellspacing="0" cellpadding="0">
         <tbody>
             <tr>
-                <td colspan="7" style="height:12cm;">
+                <td colspan="7" style="height:14cm;">
                     <table border='0' width="100%" cellspacing="0" cellpadding="0" >
                         <thead>
                             <tr>
@@ -143,9 +143,11 @@
                         <?php
                         $total = 0;
                         $no = 0;
-                        $sub_before = $sub_discount = $sub_after = $grand_before = $grand_discount = $grand_after = 0;
+                        $sub_harga_satuan = $sub_qty = $sub_before = $sub_discount = $sub_after = $grand_before = $grand_discount = $grand_after = 0;
                         foreach ($query_details as $key => $row) {
                             $total++;
+                            $sub_harga_satuan += $row['harga_satuan'];
+                            $sub_qty += $row['qty'];
                             $sub_before += $row['sub_total_before'];
                             $sub_discount += $row['discount'];
                             $sub_after += $row['sub_total_after'];
@@ -168,7 +170,8 @@
 
                             if (@$query_details[$key+1]['kategori'] != $row['kategori']) {
                                 echo '<tr>
-                                        <td colspan="4" class="w3-right-align w3-wide">Sub Total</td>
+                                        <td colspan="3" class="w3-right-align w3-wide">Sub Total</td>
+                                        <td class="w3-center" style="border-top:thin dotted;"><b>'.number_format($sub_qty, 2).'</b></td>
                                         <td class="w3-right-align" style="border-top:thin dotted;"><b>'.number_format($sub_before).'</b></td>
                                         <td class="w3-right-align" style="border-top:thin dotted;"><b>'.number_format($sub_discount).'</b></td>
                                         <td class="w3-right-align" style="border-top:thin dotted;"><b>'.number_format($sub_after).'</b></td>
@@ -176,10 +179,14 @@
                                 echo '<tr>
                                         <td colspan="7"></td>
                                     </tr>';
+                                $sub_harga_satuan = 0;
+                                $sub_qty = 0;
                                 $sub_before = 0;
                                 $sub_discount = 0;
                                 $sub_after = 0;
                             }
+                                $grand_harga_satuan += $row['harga_satuan'];
+                                $grand_qty += $row['qty'];
                                 $grand_before += $row['sub_total_before'];
                                 $grand_discount += $row['discount'];
                                 $grand_after += $row['sub_total_after'];
@@ -189,10 +196,38 @@
                             <td colspan="7" valign="bottom"><div style="margin-bottom:8px;"></div></td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="w3-right-align w3-wide" style="border-top:thin solid;border-bottom: thin solid;"><b>Total</b></td>
+                            <td colspan="3" class="w3-right-align w3-wide" style="border-top:thin solid;border-bottom: thin solid;"><b>Total</b></td>
+                            <td class="w3-center" style="border-top:thin solid;border-bottom: thin solid;"><b><?= number_format($grand_qty,2)?></b></td>
                             <td class="w3-right-align" style="border-top:thin solid;border-bottom: thin solid;"><b><?= number_format($grand_before)?></b></td>
                             <td class="w3-right-align" style="border-top:thin solid;border-bottom: thin solid;"><b><?= number_format($grand_discount)?></b></td>
                             <td class="w3-right-align" style="border-top:thin solid;border-bottom: thin solid;"><b><?= number_format($grand_after)?></b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
+                        </tr>
+                        <tr>
+                            <td>Cara Pembayaran</td>
+                            <td colspan="3">: <?= $row_master->MethodOfPayment7; ?></td>
+                            <td colspan="2">DPP</td>
+                            <td class="w3-right-align"><?= number_format($row_master->dpp) ?></td>
+                        </tr>
+                        <tr>
+                            <td>No. Work Order</td>
+                            <td colspan="3">: <span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_wo; ?></b></span></td>
+                            <td colspan="2">PPN</td>
+                            <td class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Dicetak Oleh</td>
+                            <td colspan="3">: <?= $dicetak_oleh; ?> </td>
+                            <td colspan="2">Biaya Materai</td>
+                            <td class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Cetak</td>
+                            <td colspan="3">: <?= date('d/m/Y H:i'); ?></td>
+                            <td colspan="2" style="border-top:thin dotted;"><b class="w3-wide" style="font-size:12pt;">Grand Total</b></td>
+                            <td class="w3-right-align" style="border-top:thin dotted;"><b style="font-size:12pt;"><?= number_format($row_master->grand_total) ?></b></td>
                         </tr>
                     </table>
                 </td>
@@ -200,33 +235,7 @@
         </tbody>
         <tfoot >
             
-            <tr>
-                <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
-            </tr>
-            <tr>
-                <td>Cara Pembayaran</td>
-                <td colspan="3">: <?= $row_master->MethodOfPayment7; ?></td>
-                <td colspan="2">DPP</td>
-                <td class="w3-right-align"><?= number_format($row_master->dpp) ?></td>
-            </tr>
-            <tr>
-                <td>No. Work Order</td>
-                <td colspan="3">: <span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_wo; ?></b></span></td>
-                <td colspan="2">PPN</td>
-                <td class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
-            </tr>
-            <tr>
-                <td>Dicetak Oleh</td>
-                <td colspan="3">: <?= $dicetak_oleh; ?> </td>
-                <td colspan="2">Biaya Materai</td>
-                <td class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
-            </tr>
-            <tr>
-                <td>Tanggal Cetak</td>
-                <td colspan="3">: <?= date('d/m/Y H:i'); ?></td>
-                <td colspan="2" style="border-top:thin dotted;"><b class="w3-wide">Grand Total</b></td>
-                <td class="w3-right-align" style="border-top:thin dotted;"><b><?= number_format($row_master->grand_total) ?></b></td>
-            </tr>
+            
             <tr>
                 <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
             </tr>
@@ -260,7 +269,7 @@
                 <td colspan="6" valign="bottom"><div style="margin-bottom:55px;"></div></td>
             </tr>
             <tr>
-                <td style="border-bottom: thin solid;"></td>
+                <td class="w3-center" style="border-bottom: thin solid;"><?= word_limiter($dicetak_oleh,1,''); ?></td>
                 <td></td>
                 <td style="border-bottom: thin solid;"></td>
                 <td></td>

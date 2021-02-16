@@ -17,10 +17,10 @@
     </div>
     <div class="w3-panel">
         <div class="w3-responsive w3-white" style="margin-top: 40px;">
-            <table class="w3-hoverable w3-small" >
+            <table class="w3-hoverable w3-small" width="100%">
                 <thead>
                     <tr>
-                        <th>Filename</th>
+                        <th></th>
                         <th width="1px"></th>
                         <th width="1px"></th>
                     </tr>
@@ -187,15 +187,15 @@
                             <th>Tgl Masuk</th>
                             <th>Tgl Keluar</th>
                             <th>Service Category</th>
-                            <th>No WO</th>
+                            <th>*No WO</th>
                             <th>No Invoice</th>
                             <th>Nama</th>
                             <th>No Polisi</th>
                             <th>DPP</th>
                             <th>PPN</th>
                             <th>Grand Total</th>
-                            <th>Pembayaran</th>
-                            <th>Kasir</th>
+                            <th width="1px"></th>
+                            <th width="1px"></th>
                         </thead>
                         <tbody>';
                         $no = 1;
@@ -204,7 +204,12 @@
                                 $tgl_keluar = date('d/m/Y', strtotime($row['tgl_keluar']));
                             }else{
                                 $tgl_keluar = '-';
-                            }   
+                            }
+                            if($row['kasir'] == 'TRUE'){
+                                $kasir = '<i class="fas fa-check" style="color:green;"></i>';
+                            }else{
+                                $kasir = '<i class="fas fa-times" style="color:red;"></i>';
+                            } 
                             echo '<tr class="rowItem" onclick="goTo(\''. site_url('work_orders/print?id_master='.$row['id_master']).'\')" style="cursor:pointer">
                                 <td>'.$no++.'.</td>
                                 <td class="w3-center">'.date('d/m/Y', strtotime($row['tgl_masuk'])).'</td>
@@ -217,8 +222,8 @@
                                 <td class="w3-right-align">'.number_format($row['dpp']).'</td>
                                 <td class="w3-right-align">'.number_format($row['ppn']).'</td>
                                 <td class="w3-right-align">'.number_format($row['grand_total']).'</td>
-                                <td class="w3-center">'.$row['MethodOfPayment7'].'</td>
-                                <td class="w3-center">'.$row['kasir'].'</td>
+                                <td class="">'.$row['MethodOfPayment7'].' </td>
+                                <td>'.$kasir.'</td>
                             </tr>';
 
                         }
@@ -232,7 +237,7 @@
                 <?php if($num_list > 9): ?>
                  <tfoot style="cursor:pointer">
                     <tr>
-                        <td colspan="12" class="w3-center" onclick="goTo('<?= site_url('work_orders'.$fullURL) ?>');"><i class="fas fa-angle-double-down"></i> Tampilan Lebih banyak</td>
+                        <td colspan="12" class="w3-center" onclick="goTo('<?= site_url('work_orders'.$fullURL) ?>');"><i class="fas fa-angle-double-down"></i> Tampilkan Lebih banyak</td>
                     </tr>
                 </tfoot>
                  <?php  endif; } ?>

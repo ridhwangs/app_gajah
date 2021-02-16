@@ -270,7 +270,6 @@
                                 </tr>
                             </tbody>
                             <tfoot >
-                                
                                 <tr>
                                     <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
                                 </tr>
@@ -287,7 +286,7 @@
                                     <td class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Dicetak Oleh</td>
+                                    <td>Di Proses Oleh</td>
                                     <td colspan="3">: <?= $row_master->dicetak_oleh; ?> </td>
                                     <td colspan="2">Biaya Materai</td>
                                     <td class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
@@ -319,6 +318,7 @@
                             </tfoot>
                         </table>
                 <?php else: ?>
+                 <p  style="padding:20px;">Tidak ada data yang di pilih...</p>
                 <?php endif; ?>
               </div>
             </page>
