@@ -36,7 +36,7 @@
                         </tr>
                         <tr>
                             <td width="1px">
-                                <select class="w3-small  w3-border" name="on_table" id="on_table">
+                                <select class="w3-small  w3-border" name="on_table" id="on_table" onchange="berdasarkan()">
                                     <option value="">-- Tidak digunakan</option>
                                     <option value="no_invoice">1. No. Invoice</option>
                                     <option value="no_wo">2. No. Work Order</option>
@@ -330,8 +330,15 @@
     $("#tgl_akhir").val('<?= $this->input->get('tgl_akhir') ?>');
     $("#q").val('<?= $this->input->get('q') ?>');
     $("#on_table").val('<?= $this->input->get('on_table') ?>');
-    $("#on_table").on('change', function() {
-         $("#q").select();
-      });
+    berdasarkan();
+    function berdasarkan (argument) {
+        var key = $("#on_table").val();
+        if (key === "") {
+            $("#q").attr('disabled', true).prop('required', false);
+            $("#q").val("").attr("placeholder", "Tidak menggunakan kata pencarian");
+        } else {
+            $("#q").attr('disabled', false).prop('required', true).focus().attr("placeholder", "Apa yang akan di cari?");
+        }
+    }
 </script>
 <?php $this->load->view('template/footer'); ?>
