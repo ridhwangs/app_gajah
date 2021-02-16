@@ -11,7 +11,7 @@
     }
     page[size="A4"] {  
         width: 210mm;
-        height: 275mm;   
+        min-height: 275mm;   
     }
     table td, table td * {
         vertical-align: top;
@@ -49,7 +49,7 @@
         <tr>
             <td></td>
             <td colspan="2">Telp. <?= $row_master->telp_kantor; ?></td>
-            <td colspan="3"><?= $row_master->no_invoice; ?></td>
+            <td colspan="3"><span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_invoice; ?></b></span></td>
         </tr>
          <tr>
             <td></td>
@@ -124,7 +124,6 @@
             <td colspan="6" valign="bottom"><div style="margin-bottom:15px;"></div></td>
         </tr>
     </table>
-    
     <table border='0' width="100%" cellspacing="0" cellpadding="0">
         <tbody>
             <tr>
@@ -212,13 +211,13 @@
             </tr>
             <tr>
                 <td>No. Work Order</td>
-                <td colspan="3">: <?= $row_master->no_wo; ?></td>
+                <td colspan="3">: <span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_wo; ?></b></span></td>
                 <td colspan="2">PPN</td>
                 <td class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
             </tr>
             <tr>
                 <td>Dicetak Oleh</td>
-                <td colspan="3">: <?= $row_master->dicetak_oleh; ?> </td>
+                <td colspan="3">: <?= $dicetak_oleh; ?> </td>
                 <td colspan="2">Biaya Materai</td>
                 <td class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
             </tr>

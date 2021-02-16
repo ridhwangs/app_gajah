@@ -4,16 +4,20 @@
     body{
         background-color: #34495e;
     }
-</style>
+
+
+    .rowItem:hover {background-color:#bdc3c7;} 
+</style>    
      <div class="w3-top">
         <div class="w3-bar w3-light-grey">
-            <button onclick="reloadList()" class="w3-button w3-left"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button onclick="reloadList()" class="w3-button w3-left"><i class="fas fa-sync-alt"></i> Refresh</button>      
             <button class="w3-button w3-right" onclick="goTo('<?= site_url('doLogout'); ?>')"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <button class="w3-button w3-right" onclick="goTo('<?= site_url('profile'); ?>')" class="w3-button w3-left"><i class="fas fa-user"></i> Profile</button>
         </div>
     </div>
     <div class="w3-panel">
-        <div class="w3-responsive" style="padding-top: 40px;">
-            <table class="w3-table-all w3-hoverable w3-small">
+        <div class="w3-responsive w3-white" style="margin-top: 40px;">
+            <table class="w3-hoverable w3-small" >
                 <thead>
                     <tr>
                         <th>Filename</th>
@@ -118,74 +122,121 @@
         </div>
     </div>
     <div class="w3-panel">
-        <div class="w3-light-gray"  style="padding:5px;">
-            <form method="GET" autocomplete="off">
-                <div class="w3-row">
-                    <select class="w3-small  w3-border" name="on_table" id="on_table" required="">
-                        <option value="" disabled>-- Berdasarkan</option>
-                        <option value="no_invoice">1. No. Invoice</option>
-                        <option value="no_wo">2. No. Work Order</option>
-                        <option value="no_polisi">3. No. Polisi</option>
-                        <option value="nm_pelanggan">4. Nama</option>
-                    </select>
-                    <input class="w3-border w3-small" type="text" placeholder="Search..." style="width: 350px;" name="q" id="q">
-                    <?php if(!empty($this->input->get('q'))): ?>
-                    <a href="javascript:void(0);" onclick="goTo('<?= site_url('work_orders'); ?>');">Reset</a>
-                    <?php endif; ?>
-                </div>
-            </form>
-          
+        <div class="w3-light-gray"  style="padding:5px; padding-bottom:10px;">
+            <div class="w3-row">
+              <div class="w3-half w3-container">
+                <form method="POST" action="<?= site_url('work_orders/doCari'); ?>" autocomplete="off">
+                    <table border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
+                        <tr>
+                            <td width="1px">Dari Tanggal</td>
+                            <td width="10px" class="w3-center">:</td>
+                            <td><input type="date" class="w3-border w3-small" name="tgl_awal" id="tgl_awal" placeholder="Kosongkan jika tidak perlu"></td>
+                        </tr>
+                        <tr>
+                            <td width="1px">Hingga Tanggal</td>
+                            <td width="1px" class="w3-center">:</td>
+                            <td><input type="date" class="w3-border w3-small" name="tgl_akhir" id="tgl_akhir" placeholder="Kosongkan jika tidak perlu"></td>
+                        </tr>
+                        <tr>
+                            <td width="1px">
+                                <select class="w3-small  w3-border" name="on_table" id="on_table">
+                                    <option value="">-- Tidak digunakan</option>
+                                    <option value="no_invoice">1. No. Invoice</option>
+                                    <option value="no_wo">2. No. Work Order</option>
+                                    <option value="no_polisi">3. No. Polisi</option>
+                                    <option value="nm_pelanggan">4. Nama</option>
+                                    <option value="no_rangka">5. No Rangka</option>
+                                </select>
+                            </td>
+                            <td class="w3-center">:</td>
+                            <td>
+                                <input class="w3-border w3-small" type="text" placeholder="Search..." style="width: 350px;" name="q" id="q">
+                                <button class="w3-small">Cari</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+              </div>
+              <div class="w3-half w3-container w3-right-align">
+                <table border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
+                    <tr>
+                        <td >Masuk per Hari ini (MMKSI)</td>
+                        <td width="3%" class="w3-center">:</td>
+                        <td width="5%"><b><?= $count_wo_mmksi ?></b></td>
+                    </tr>
+                    <tr>
+                        <td>Masuk per Hari ini (MFTBC)</td>
+                        <td style="border-bottom: thin solid;" class="w3-center">:</td>
+                        <td style="border-bottom: thin solid;"><b><?= $count_wo_mftbc ?></b></td>
+                    </tr>
+                    <tr>
+                        <td class="w3-right-align">Total per Hari ini</td>
+                        <td class="w3-center">:</td>
+                        <td><b><?= $count_wo_mmksi + $count_wo_mftbc ?></b></td>
+                    </tr>
+                </table>
+              </div>
+            </div>
+            
         </div>
-        <div class="w3-responsive" style="padding-top: 5px;">
-            <table class="w3-table-all w3-hoverable w3-small" style="white-space: pre;">
-                <thead>
-                    <th>No.</th>
-                    <th>Tgl Masuk</th>
-                    <th>Tgl Keluar</th>
-                    <th>Service Category</th>
-                    <th>No Invoice</th>
-                    <th>No WO</th>
-                    <th>Nama</th>
-                    <th>No Polisi</th>
-                </thead>
-                <tbody>
+        <div class="w3-responsive w3-white" style="padding-top: 5px;">
+            <table class="w3-table w3-small w3-bordered " border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
                     <?php
+                    echo '<thead>
+                            <th>No.</th>
+                            <th>Tgl Masuk</th>
+                            <th>Tgl Keluar</th>
+                            <th>Service Category</th>
+                            <th>No WO</th>
+                            <th>No Invoice</th>
+                            <th>Nama</th>
+                            <th>No Polisi</th>
+                            <th>DPP</th>
+                            <th>PPN</th>
+                            <th>Grand Total</th>
+                            <th>Pembayaran</th>
+                            <th>Kasir</th>
+                        </thead>
+                        <tbody>';
                         $no = 1;
-                        foreach ($query_master as $row) {
-                            echo '<tr onclick="goTo(\''. site_url('work_orders/print?id_master='.$row->id_master).'\')" style="cursor:pointer">
-                                    <td>'.$no++.'.</td>
-                                    <td>'.date('d/m/Y', strtotime($row->tgl_masuk)).'</td>
-                                    <td>'.date('d/m/Y', strtotime($row->tgl_keluar)).'</td>
-                                    <td>'.$row->service_category.'</td>
-                                    <td>'.$row->no_invoice.'</td>
-                                    <td>'.$row->no_wo.'</td>
-                                    <td>'.$row->nm_pelanggan.'</td>
-                                    <td>'.$row->no_polisi.'</td>
-                                </tr>';
+                        foreach ($query_master as $key => $row) {
+                            if($row['tgl_keluar'] != '1970-01-01'){
+                                $tgl_keluar = date('d/m/Y', strtotime($row['tgl_keluar']));
+                            }else{
+                                $tgl_keluar = '-';
+                            }   
+                            echo '<tr class="rowItem" onclick="goTo(\''. site_url('work_orders/print?id_master='.$row['id_master']).'\')" style="cursor:pointer">
+                                <td>'.$no++.'.</td>
+                                <td class="w3-center">'.date('d/m/Y', strtotime($row['tgl_masuk'])).'</td>
+                                <td class="w3-center">'.$tgl_keluar.'</td>
+                                <td>'.$row['service_category'].'</td>
+                                <td><b>'.substr($row['no_wo'], 7).'</b></td>
+                                <td>'.substr($row['no_invoice'], 7).'</td>
+                                <td>'.$row['nm_pelanggan'].'</td>
+                                <td>'.$row['no_polisi'].'</td>
+                                <td class="w3-right-align">'.number_format($row['dpp']).'</td>
+                                <td class="w3-right-align">'.number_format($row['ppn']).'</td>
+                                <td class="w3-right-align">'.number_format($row['grand_total']).'</td>
+                                <td class="w3-center">'.$row['MethodOfPayment7'].'</td>
+                                <td class="w3-center">'.$row['kasir'].'</td>
+                            </tr>';
+
                         }
+                        echo '</tbody>';
                     ?>
-                </tbody>
                  <?php
                  if(empty($this->input->get('q'))){ 
                     $show_more = 5 + $list;
-                    $fullURL = '?list='.$show_more.'&on_table='.$this->input->get('on_table').'&q='.$this->input->get('q'); 
+                    $fullURL = '?list='.$show_more;
                 ?>
-               
-                <?php if($num_list > 1): ?>
+                <?php if($num_list > 9): ?>
                  <tfoot style="cursor:pointer">
                     <tr>
-                        <td colspan="8" class="w3-center" onclick="goTo('<?= site_url('work_orders'.$fullURL) ?>');"><i class="fas fa-angle-double-down"></i> Tampilan Lebih banyak</td>
+                        <td colspan="12" class="w3-center" onclick="goTo('<?= site_url('work_orders'.$fullURL) ?>');"><i class="fas fa-angle-double-down"></i> Tampilan Lebih banyak</td>
                     </tr>
                 </tfoot>
                  <?php  endif; } ?>
             </table>
         </div>
     </div>
-<script>
-    $("#q").val('<?= $this->input->get('q') ?>');
-    $("#on_table").val('<?= $this->input->get('on_table') ?>');
-    $("#on_table").on('change', function() {
-         $("#q").select();
-      });
-</script>
 <?php $this->load->view('template/footer'); ?>

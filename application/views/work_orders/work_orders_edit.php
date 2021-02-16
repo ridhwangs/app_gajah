@@ -280,6 +280,7 @@
                                     <option value="SPAREPARTS">3. SPAREPARTS</option>
                                     <option value="SUB MATERIAL">4. SUB MATERIAL</option>
                                     <option value="SUB ORDER">5. SUB ORDER</option>
+                                    <option value="EQUIPMENT">6. EQUIPMENT</option>
                                 </select>
                             </form>
                        

@@ -12,16 +12,20 @@
       transform: translate(-50%, -50%);
     }
 </style>
+   <div class="w3-top no-print">
+        <div class="w3-bar w3-light-grey">
+            <a href="javascript:void(0);" onclick="goTo('<?= site_url('work_orders'); ?>')" class="w3-button w3-left"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
+        </div>
+    </div>
     <div class="w3-panel">
         </div>
         <div class="w3-responsive" style="padding-top: 5px;">
             <div class="w3-panel w3-light-gray centered" style="padding:20px;">
-                <form action="<?= site_url('identifikasi/read/identifikasi'); ?>" method="POST" id="form-login" autocomplete="yes">
-                    <table border="0" cellspacing="0" width="250px">
+                <form action="<?= site_url('profile/update/identifikasi'); ?>" method="POST" id="form-profile" autocomplete="yes">
+                	<input type="hidden" name="username" value=<?= $row_user->username; ?>>
+                    <table border="0" cellspacing="0" width="400px">
                         <tr>
-                            <td align="left"><img src="<?= base_url('assets/images/logo-mmksi.png'); ?>" width="35px"></td>
-                            <td align="center"><b></b></td>
-                            <td align="right"><img src="<?= base_url('assets/images/logo-fuso.png'); ?>"  width="35px"></td>
+                            <td colspan="3" align="center"><b>Edit Profile</b></td>
                         </tr>
                         <tr>
                             <td style="padding-bottom:5px;" colspan="3"></td>
@@ -40,17 +44,21 @@
                         </tr>
                         <tr>
                             <td >Username</td>
-                            <td colspan="2"><input type="text" name="username" placeholder="Username" id="username" style="width:100%;" required></td>
+                            <td colspan="2"><input type="text" placeholder="Username" id="username" style="width:100%;" required value="<?= $row_user->username; ?>" disabled></td>
                         </tr>
                         <tr>
                             <td style="padding-bottom:2px;" colspan="3"></td>
                         </tr>
                         <tr>
                             <td>Password</td>
-                            <td colspan="2"><input type="password" name="password" placeholder="Password" id="password" style="width:100%;" required></td>
+                            <td colspan="2"><input type="text" name="password" placeholder="Password" id="password" style="width:100%;" required value="<?= $row_user->password; ?>"></td>
                         </tr>
                         <tr>
-                            <td style="padding-top:10px; padding-bottom:10px;" colspan="3"><button type="submit" form="form-login" style="width:100%;">Login</button></td>
+                            <td>Nama</td>
+                            <td colspan="2"><input type="text" name="nama" placeholder="Nama Lengkap" id="password" style="width:100%;" required value="<?= $row_user->nama; ?>"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top:10px; padding-bottom:10px;" colspan="3"><button type="submit" form="form-profile" style="width:100%;">Simpan</button></td>
                         </tr>
                         <tr>
                             <td colspan="3" align="center" style="border-top:1px solid;">Version 3.1.11 LTS</td>
@@ -60,16 +68,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-
-            $("#username").focus();
-        <?php
-            if(!empty($this->session->set_input)): 
-        ?>
-            $("#username").val('<?= $this->session->set_input ?>');
-            $("#password").focus();
-        <?php
-            endif; 
-        ?>
-    </script>
 <?php $this->load->view('template/footer'); ?>
