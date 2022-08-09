@@ -81,7 +81,7 @@ $db_debug = "(ENVIRONMENT == 'production')";
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '103.56.149.31',
+	'hostname' => '13.251.132.79',
 	'username' => $username,
 	'password' => $password,
 	'database' => 'spsarana_service',

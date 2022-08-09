@@ -1,5 +1,4 @@
 <?php $this->load->view('template/header'); ?>
-<?php $dir = getenv("HOMEDRIVE") . getenv("HOMEPATH").'\Downloads'; ?>
 <style>
     body{
         background-color: #34495e;
@@ -55,31 +54,23 @@
         </div>
     </div>
    
-    <div class="w3-panel" style="padding-top:20px;">
+    <div class="w3-panel" style="padding-top:20px; padding-left:150px; padding-right:150px;">
         <div class="w3-panel w3-light-gray"  style="padding-bottom:20px;" >
              <table width="100%" border="0" cellspacing="0" >
+        
                 <tr>
                     <td></td>
-                    <td colspan="5"><i style="font-family: 'Arial Black'; font-size:12pt;">PT. SURYAPUTRA SARANA</i></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="2"><?= $row_master->alamat_kantor; ?></td>
-                    <td colspan="3"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="2"><?= $row_master->kota_kantor; ?></td>
+                    <td colspan="2"></td>
                     <td colspan="3"><b>INVOICE</b></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="2">Telp. <?= $row_master->telp_kantor; ?></td>
+                    <td colspan="2"></td>
                     <td colspan="3"><?= $row_master->no_invoice; ?></td>
                 </tr>
                  <tr>
                     <td></td>
-                    <td colspan="2">NPWP : <?= $row_master->npwp_kantor; ?></td>
+                    <td colspan="2"></td>
                     <td colspan="3"><i><?= $row_master->service_category; ?></i></td>
                 </tr>
                 <tr>
@@ -222,30 +213,59 @@
                 <tr>
                 <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
             </tr>
-            <tr>
-                <td>Cara Pembayaran</td>
-                <td colspan="3">: <?= $row_master->MethodOfPayment7; ?></td>
-                <td colspan="2">DPP</td>
-                <td class="w3-right-align"><?= number_format($row_master->dpp) ?></td>
-            </tr>
-            <tr>
-                <td>No. Work Order</td>
-                <td colspan="3">: <?= $row_master->no_wo; ?></td>
-                <td colspan="2">PPN</td>
-                <td class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
-            </tr>
-            <tr>
-                <td>Dicetak Oleh</td>
-                <td colspan="3">: <?= $row_master->created_by; ?> </td>
-                <td colspan="2">Biaya Materai</td>
-                <td class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
-            </tr>
-            <tr>
-                <td>Tanggal Cetak</td>
-                <td colspan="3">: <?= date('d/m/Y H:i'); ?></td>
-                <td colspan="2" style="border-top:thin dotted;"><b class="w3-wide">Grand Total</b></td>
-                <td class="w3-right-align" style="border-top:thin dotted;"><b><?= number_format($row_master->grand_total) ?></b></td>
-            </tr>
+            <?php if($row_master->jenis_wo == "WITH TAX"):  ?>
+                <tr>
+                    <td colspan="1">Cara Pembayaran</td>
+                    <td colspan="2">: <?= $row_master->MethodOfPayment7; ?></td>
+                    <td colspan="2">DPP</td>
+                    <td colspan="2" class="w3-right-align"><?= number_format($row_master->dpp) ?></td>
+                </tr>
+                <tr>
+                    <td colspan="1">No. Work Order</td>
+                    <td colspan="2">: <span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_wo; ?></b></span></td>
+                    <td colspan="2">PPN</td>
+                    <td colspan="2" class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
+                </tr>
+                <tr>
+                    <td colspan="1">Dibuat Oleh</td>
+                    <td colspan="2">: <?= $row_master->created_by; ?> </td>
+                    <td colspan="2">Biaya Materai</td>
+                    <td colspan="2" class="w3-right-align">
+                    <?= number_format($row_master->BeaMaterai) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">Tanggal Cetak</td>
+                    <td colspan="2">: <?= date('d/m/Y H:i'); ?></td>
+                    <td colspan="2" style="border-top:thin dashed;"><b class="w3-wide" style="font-size:12pt;">Grand Total</b></td>
+                    <td colspan="2" class="w3-right-align" style="border-top:thin dashed;"><b style="font-size:12pt;"><?= number_format($row_master->grand_total) ?></b></td>
+                </tr>
+            <?php else: ?>
+                    <tr>
+                        <td colspan="1">Cara Pembayaran</td>
+                        <td colspan="2">: <?= $row_master->MethodOfPayment7; ?></td>
+                        <td colspan="2">Biaya Materai</td>
+                        <td colspan="2" class="w3-right-align"><?= number_format($row_master->BeaMaterai) ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">No. Work Order</td>
+                        <td colspan="2">: <span style="font-family: 'Tahoma'; font-size:11pt;"><b><?= $row_master->no_wo; ?></b></span></td>
+                        <td colspan="2" style="border-top:thin dashed;"><b class="w3-wide" style="font-size:12pt;">Grand Total</b></td>
+                        <td colspan="2" class="w3-right-align" style="border-top:thin dashed;"><b style="font-size:12pt;"><?= number_format($row_master->grand_total) ?></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">Dibuat Oleh</td>
+                        <td colspan="2">: <?= $row_master->created_by; ?> </td>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">Tanggal Cetak</td>
+                        <td colspan="2">: <?= date('d/m/Y H:i'); ?></td>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                    </tr>
+            <?php endif; ?>
             <tr>
                 <td colspan="7" valign="bottom"><div style="margin-bottom:10px;"></div></td>
             </tr>
@@ -258,22 +278,26 @@
       <div class="modal-content">
         <div class="modal-header">
           <span class="close">&times;</span>
-          <h4>Edit Kategori</h4>
+          <b>Edit <i style="color:red;">** akan merubah Total & Grand Total termasuk dpp/ppn</i></b>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" >
           <table border='0' width="100%" cellspacing="0" >
                 <thead>
                     <tr>
-                        <th style="border-top:thin solid;border-bottom: thin solid;" width="150px;">KATEGORI</th>
-                        <th style="border-top:thin solid;border-bottom: thin solid;">KODE</th>
-                        <th style="border-top:thin solid;border-bottom: thin solid;">KETERANGAN</th>
+                        <td style="border-top:thin solid;border-bottom: thin solid;" width="150px;">KATEGORI</td>
+                        <td style="border-top:thin solid;border-bottom: thin solid;">KODE</td>
+                        <td style="border-top:thin solid;border-bottom: thin solid;">KETERANGAN</td>
+                        <td style="border-top:thin solid;border-bottom: thin solid;" width="150px;">HARGA SATUAN</td>
+                        <td style="border-top:thin solid;border-bottom: thin solid;" width="50px;">QTY</td>
+                        <td style="border-top:thin solid;border-bottom: thin solid;" width="150px;">DISCOUNT</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                    <form method="POST" action="<?= site_url('work_orders/update/details'); ?>" autocomplete="off" id="form-edit"> 
                         <td style="padding-top:8px;" valign="center">
-                            <form method="POST" action="<?= site_url('work_orders/update/kategori'); ?>" autocomplete="off" id="form-edit">
-                                <input type="hidden" name="id_details" id="id_details">
+                               <input type="hidden" name="id_details" id="id_details">
+                               <input type="hidden" name="id_master" id="id_master">
                                 <select id="kategori" name="kategori" style="width:80%">
                                     <option value="JASA">1. JASA</option>
                                     <option value="OLI">2. OLI</option>
@@ -281,12 +305,16 @@
                                     <option value="SUB MATERIAL">4. SUB MATERIAL</option>
                                     <option value="SUB ORDER">5. SUB ORDER</option>
                                     <option value="EQUIPMENT">6. EQUIPMENT</option>
+                                    <option value="ACCESSORIES">7. ACCESSORIES</option>
                                 </select>
-                            </form>
-                       
                         </td>
                         <td valign="center"><span id="kode">Membaca...</span></td>
                         <td valign="center"><span id="keterangan">Membaca...</span></td>
+                        <td><input type="number" style="text-align:right;" name="harga_satuan" id="harga_satuan"></td>
+                        <td><input type="number" style="text-align:right;width:50px;" name="qty" id="qty"></td>
+                        <td><input type="number" style="text-align:right;" name="discount" id="discount"></td>
+                        
+                        </form>
                     </tr>
                 </tbody>
           </table>
@@ -300,6 +328,13 @@
     // Get the modal
     var modal = document.getElementById("modal-edit");
     var span = document.getElementsByClassName("close")[0];
+    $(document).ready(function() {
+        $(window).keydown(function(event) {
+            if (event.keyCode == 116) {
+                reloadList()
+            }
+        });
+    });
     function doEdit(id_details){
         $.ajax({
             url: "<?= site_url('work_orders/read/details'); ?>",
@@ -312,9 +347,13 @@
             success: function(data) {
                 $('#form-edit')[0].reset();
                 $("#id_details").val(data.id_details);
+                $("#id_master").val(data.id_master);
                 $("#kategori").val(data.kategori);
                 $("#kode").html(data.kode);
                 $("#keterangan").html(data.keterangan);
+                $("#harga_satuan").val(data.harga_satuan);
+                $("#qty").val(data.qty);
+                $("#discount").val(data.discount);
                 modal.style.display = "block";
             }
         });

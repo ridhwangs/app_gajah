@@ -183,17 +183,19 @@
             <table class="w3-table w3-small w3-bordered " border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
                     <?php
                     echo '<thead>
-                            <th>No.</th>
+                            <th width="1%">No.</th>
                             <th>Tgl Masuk</th>
                             <th>Tgl Keluar</th>
                             <th>Service Category</th>
                             <th>*No WO</th>
                             <th>No Invoice</th>
                             <th>Nama</th>
-                            <th>No Polisi</th>
+                            <th width="1%">No Rangka</th>
+                            <th width="1%">No Polisi</th>
                             <th>DPP</th>
                             <th>PPN</th>
                             <th>Grand Total</th>
+                            <th></th>
                             <th width="1px"></th>
                             <th width="1px"></th>
                         </thead>
@@ -214,14 +216,16 @@
                                 <td>'.$no++.'.</td>
                                 <td class="w3-center">'.date('d/m/Y', strtotime($row['tgl_masuk'])).'</td>
                                 <td class="w3-center">'.$tgl_keluar.'</td>
-                                <td>'.$row['service_category'].'</td>
+                                <td>'.str_replace('SPSR','',$row['service_category']).'</td>
                                 <td><b>'.substr($row['no_wo'], 7).'</b></td>
                                 <td>'.substr($row['no_invoice'], 7).'</td>
-                                <td>'.$row['nm_pelanggan'].'</td>
+                                <td><a title="'.$row['nm_pelanggan'].'">'.word_limiter($row['nm_pelanggan'],3,'...').'</a></td>
+                                <td>'.$row['no_rangka'].'</td>
                                 <td>'.$row['no_polisi'].'</td>
                                 <td class="w3-right-align">'.number_format($row['dpp']).'</td>
                                 <td class="w3-right-align">'.number_format($row['ppn']).'</td>
                                 <td class="w3-right-align">'.number_format($row['grand_total']).'</td>
+                                 <td class="">'.$row['jenis_wo'].' </td>
                                 <td class="">'.$row['MethodOfPayment7'].' </td>
                                 <td>'.$kasir.'</td>
                             </tr>';
@@ -246,6 +250,14 @@
     </div>
     <script type="text/javascript">
         berdasarkan();
+        
+        $(document).ready(function() {
+            $(window).keydown(function(event) {
+                if (event.keyCode == 116) {
+                    reloadList()
+                }
+            });
+        });
         function berdasarkan (argument) {
             var key = $("#on_table").val();
             if (key === "") {

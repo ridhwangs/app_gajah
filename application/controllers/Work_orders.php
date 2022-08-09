@@ -12,6 +12,7 @@ class Work_orders extends CI_Controller {
         }
         $this->userInfo = $this->crud_model->read('app_identifikasi', ['username' => $this->session->username])->row();
         $this->load->model('work_orders_model');
+        $this->load->helper('terbilang_helper');
     }
 
 
@@ -19,6 +20,9 @@ class Work_orders extends CI_Controller {
     public function index(){
  
         $where = [];
+		if(!empty($this->userInfo->dealerID)){
+			$where['master_work_order.dealerID'] = $this->userInfo->dealerID;
+		}
         if(!empty($this->input->get('list'))){
             $list = $this->input->get('list');
         }else{
@@ -31,8 +35,8 @@ class Work_orders extends CI_Controller {
             'list' => $list,
             'num_list' => $query->num_rows(),
             'query_master' => $query->result_array(),
-            'count_wo_mmksi' => $this->crud_model->read('master_work_order',['no_wo LIKE' => '%WOM%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
-            'count_wo_mftbc' => $this->crud_model->read('master_work_order',['no_wo LIKE' => '%WOK%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
+            'count_wo_mmksi' => $this->crud_model->read('master_work_order',['dealerID'=> $this->userInfo->dealerID,'no_wo LIKE' => '%WOM%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
+            'count_wo_mftbc' => $this->crud_model->read('master_work_order',['dealerID'=> $this->userInfo->dealerID,'no_wo LIKE' => '%WOK%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
         );
         $this->load->view('work_orders/work_orders_index', $data);
     }
@@ -50,6 +54,7 @@ class Work_orders extends CI_Controller {
 
     public function cari()
     {
+        $where = [];
         if(!empty($this->input->get('q'))){
             $where = [
                 'master_work_order.'.$this->input->get('on_table').' LIKE' => '%'.$this->input->get('q').'%'  
@@ -57,8 +62,6 @@ class Work_orders extends CI_Controller {
         }
         if(!empty($this->userInfo->dealerID)){
             $where['master_work_order.dealerID'] = $this->userInfo->dealerID;
-        }else{
-            $where = [];
         }
 
         if(!empty($this->input->get('tgl_awal'))){
@@ -72,8 +75,8 @@ class Work_orders extends CI_Controller {
         $data = array(
             'page_header' => 'Work Order Cari ',
             'query_master' => $query->result_array(),
-            'count_wo_mmksi' => $this->crud_model->read('master_work_order',['no_wo LIKE' => '%WOM%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
-            'count_wo_mftbc' => $this->crud_model->read('master_work_order',['no_wo LIKE' => '%WOK%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
+            'count_wo_mmksi' => $this->crud_model->read('master_work_order',['dealerID'=> $this->userInfo->dealerID,'no_wo LIKE' => '%WOM%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
+            'count_wo_mftbc' => $this->crud_model->read('master_work_order',['dealerID'=> $this->userInfo->dealerID,'no_wo LIKE' => '%WOK%', 'DATE(created_at)' => date('Y-m-d')])->num_rows(),
         );
         if(!empty($this->input->get('id_master'))){
             $data['row_master'] = $this->crud_model->read('master_work_order',['id_master' => $this->input->get('id_master')],'created_at','DESC')->row();
@@ -98,6 +101,7 @@ class Work_orders extends CI_Controller {
             'id_master' => $this->input->get('id_master'),
             'row_master' => $this->crud_model->read('master_work_order',['id_master' => $this->input->get('id_master')],'created_at','DESC')->row(),
             'query_details' => $this->work_orders_model->read(['details_work_order.id_master' => $this->input->get('id_master')])->result_array(),
+            'count_details' => $this->work_orders_model->read(['details_work_order.id_master' => $this->input->get('id_master')])->num_rows(),
             'dicetak_oleh' => $this->userInfo->nama,
         );
         $this->load->view('work_orders/work_orders_print', $data);
@@ -149,7 +153,7 @@ class Work_orders extends CI_Controller {
                         
                         $this->crud_model->delete('master_work_order', ['no_wo' => $data_master['no_wo']]);
 
-                        $data_master['dealerID'] = $this->userInfo->dealerID;
+                        $data_master['dealerID'] = substr($data_master['no_wo'],0,6);
                         $data_master['no_invoice'] = (string)$headers->attributes()->Textbox652;
                         $data_master['tgl_keluar'] = date("Y-m-d", strtotime(str_replace('/', '-', $headers->attributes()->Textbox38)));
                         $data_master['dicetak_oleh'] = $this->userInfo->nama;
@@ -181,6 +185,9 @@ class Work_orders extends CI_Controller {
                                 }else if($kategori == "Equipment"){
                                     $urutan = 5;
                                     $kategori = "EQUIPMENT";
+                                }else if($kategori == "Accessories"){
+                                    $urutan = 6;
+                                    $kategori = "ACCESSORIES";
                                 }
                                 $data = [
                                     'id_master' => $data_master['id_master'],
@@ -197,13 +204,97 @@ class Work_orders extends CI_Controller {
                                     'created_at' => date('Y-m-d H:i:s')
                                 ];
                                 $this->crud_model->create('details_work_order', $data);
-
                             }
                         }
                     }else if($xml->Subreport2){
                         //withouttax = subreport2
-                           show_404(); 
-                        die();
+						$headers = $xml->Subreport2->Report->Tablix2->Details_Collection->Details;
+
+						$data_master  = [
+							'alamat_kantor' => (string)$headers->Tablix10->attributes()->Textbox123,
+							'kota_kantor' => (string)$headers->Tablix10->attributes()->Textbox124,
+							'telp_kantor' => str_replace('TELP: ', '', $headers->Tablix10->attributes()->Textbox130),
+							'npwp_kantor' => str_replace('NPWP: ', '', $headers->Tablix10->attributes()->Textbox142),
+							'no_wo' => (string)$headers->Tablix7->attributes()->Textbox304,
+							'service_category' => (string)$headers->attributes()->Textbox15,
+							'no_pelanggan' => (string)$headers->attributes()->Textbox26,
+							'nik' => (string)$headers->attributes()->Textbox92,
+							'nm_pelanggan' => (string)$headers->attributes()->Textbox33,
+							'alamat_pelanggan' => (string)$headers->attributes()->Textbox74,
+							'th_produksi' => (string)$headers->attributes()->Textbox20,
+							'no_telp' => (string)$headers->attributes()->Textbox84,
+							'CurrentMileageWOValue' =>(string) $headers->attributes()->CurrentMileageWOValue2,
+							'no_polisi' => (string)$headers->attributes()->Textbox79,
+							'tgl_masuk' => date("Y-m-d", strtotime(str_replace('/', '-', $headers->attributes()->Textbox72))),
+							'model' => (string)$headers->attributes()->Textbox91,
+							'no_rangka' => (string)$headers->attributes()->Textbox96,
+							'no_mesin' => (string)$headers->attributes()->Textbox99,
+							'MethodOfPayment7' => (string)$headers->Tablix6->attributes()->MethodOfPayment6,
+							'terbilang' => str_replace('Terbilang: ', '', $headers->attributes()->Textbox155),
+							'dpp' => (string)$headers->Tablix11->attributes()->Textbox70,
+							'ppn' => "0",
+							'grand_total' => (string)$headers->Tablix11->attributes()->Textbox70,
+							'BeaMaterai' => (integer)$headers->Tablix11->attributes()->Textbox1,
+							'keterangan' => (string)$headers->attributes()->Textbox284,
+							'jenis_wo' => "WITHOUT TAX",
+						];
+
+						$this->crud_model->delete('master_work_order', ['no_wo' => $data_master['no_wo']]);
+
+						$data_master['dealerID'] = substr($data_master['no_wo'],0,6);
+						$data_master['no_invoice'] = (string)$headers->attributes()->Textbox652;
+						$data_master['tgl_keluar'] = date("Y-m-d", strtotime(str_replace('/', '-', $headers->attributes()->Textbox75)));
+						$data_master['dicetak_oleh'] = $this->userInfo->nama;
+						$data_master['created_by'] = $this->session->username;
+						$data_master['created_at'] = date('Y-m-d H:i:s');
+						$this->crud_model->create('master_work_order', html_escape($data_master));
+						$id_master = $this->db->insert_id();
+						$data_master['id_master'] = $id_master;
+
+						$details = $xml->Tablix2->Details_Collection->Details->Tablix11->ProductType_Collection;
+						foreach ($details->ProductType  as $rows => $content) {
+							$kategori = preg_replace("/[^a-zA-Z]+/", "", (string)$content->attributes()->Textbox43);
+							foreach ($content->Details1_Collection->Details1 as $key => $rows) {
+								if(empty($kategori)){
+									$urutan = 0;
+									$kategori = "JASA";
+								}else if($kategori == "Oil"){
+									$urutan = 2;
+									$kategori = "OLI";
+								}else if($kategori == "Part"){
+									$urutan = 1;
+									$kategori = "SPAREPARTS";
+								}else if($kategori == "SubMaterial"){
+									$urutan = 3;
+									$kategori = "SUB MATERIAL";
+								}else if($kategori == "SubOrder"){
+									$urutan = 4;
+									$kategori = "SUB ORDER";
+								}else if($kategori == "Equipment"){
+									$urutan = 5;
+									$kategori = "EQUIPMENT";
+								}else if($kategori == "Accessories"){
+									$urutan = 6;
+									$kategori = "ACCESSORIES";
+								}
+								$data = [
+									'id_master' => $data_master['id_master'],
+									'kode' => (string)$rows->attributes()->Textbox75,
+									'keterangan' => (string)$rows->attributes()->Textbox74,
+									'harga_satuan' => (string)$rows->attributes()->UnitPriceValue,
+									'qty' => (string)$rows->attributes()->Textbox249,
+									'sub_total_before' => (string)$rows->attributes()->Textbox107,
+									'discount' => (string)$rows->attributes()->Textbox112,
+									'sub_total_after' => (string)$rows->attributes()->Textbox121,
+									'urutan' => $urutan,
+									'kategori' => $kategori,
+									'created_by' => $this->session->username,
+									'created_at' => date('Y-m-d H:i:s')
+								];
+								$this->crud_model->create('details_work_order', $data);
+							}
+						}
+
                     }else{
                         show_404();
                     }
@@ -228,9 +319,10 @@ class Work_orders extends CI_Controller {
     
     public function update($param) {
         switch ($param) {
-            case 'kategori':
+            case 'details':
                 $where = [
-                  'id_details' => $this->input->post('id_details')  
+                  'id_details' => $this->input->post('id_details'),
+                  'id_master' => $this->input->post('id_master')  
                 ];
                 $kategori = $this->input->post('kategori');
                 if($kategori == "JASA"){
@@ -245,16 +337,42 @@ class Work_orders extends CI_Controller {
                     $urutan = 4;
                 }else if($kategori == "EQUIPMENT"){
                     $urutan = 5;
+                }else if($kategori == "ACCESSORIES"){
+                    $urutan = 6;
                 }
+                $sub_total_before = $this->input->post('harga_satuan') * $this->input->post('qty');
+                $sub_total_after = $sub_total_before - $this->input->post('discount');
                 $data = [
                     'kategori' => $kategori,
                     'urutan' => $urutan,
+                    'harga_satuan' => $this->input->post('harga_satuan'),
+                    'qty' => $this->input->post('qty'),
+                    'sub_total_before' => $sub_total_before,
+                    'discount' => $this->input->post('discount'),
+                    'sub_total_after' => $sub_total_after,
                 ];
                 
                 $this->crud_model->update('details_work_order', $where, $data);
-                
+
+                $dpp = $this->crud_model->sum('details_work_order','sub_total_after',['id_master' => $where['id_master']])->row();
+                $ppn = $dpp->sub_total_after * 10 / 100;
+                $grand_total = $dpp->sub_total_after + $ppn;
+                $BeaMaterai = 0;
+                if($grand_total > 5000000){
+                    $BeaMaterai = 10000;
+                    $grand_total = $grand_total + $BeaMaterai;
+                }
+                $data_master = [
+                    'dpp' => intval($dpp->sub_total_after),
+                    'ppn' => intval($ppn),
+                    'BeaMaterai' => $BeaMaterai,
+                    'grand_total' => intval($grand_total),
+                    'terbilang' => number_to_words($grand_total).' Rupiah',
+                ];
+                $this->crud_model->update('master_work_order', ['id_master' => $where['id_master']], $data_master);
                 redirect($this->agent->referrer());
                 break;
+
             default:
                     show_404();
                 break;
