@@ -74,14 +74,17 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 
-$username = "spsarana_service";
-$password = "c65fccc65b";
+$username = "spsarana_root";
+$password = "Lupalagi03";
+
+$hostname = '13.251.132.79';
+
 
 $db_debug = "(ENVIRONMENT == 'production')";
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '103.56.149.31',
+	'hostname' => $hostname,
 	'username' => $username,
 	'password' => $password,
 	'database' => 'spsarana_service',
@@ -123,3 +126,24 @@ $db['local_db'] = array(
     'save_queries' => TRUE
 );
 
+$db['spsarana_db'] = array(
+	'dsn'	=> '',
+	'hostname' => $hostname,
+	'username' => $username,
+	'password' => $password,
+	'database' => 'spsarana_spsarana',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => $db_debug,
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8mb4',
+	'dbcollat' => 'utf8mb4_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => FALSE
+);

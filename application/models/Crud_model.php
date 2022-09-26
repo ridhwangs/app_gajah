@@ -8,6 +8,7 @@ class Crud_model extends CI_Model
   public function __construct()
   {
     parent::__construct();
+    $this->spsarana_db = $this->load->database('spsarana_db', TRUE);
   }
 
   public function create($table, $data)
@@ -47,6 +48,23 @@ class Crud_model extends CI_Model
     $this->db->select_sum($sum)
       ->where($where);
     $query = $this->db->get($table);
+    return $query;
+  }
+
+  public function spsarana_read($table, $where = null, $order = null, $sort = null, $limit = null)
+  {
+    $this->spsarana_db->from($table);
+    if ($where != null) {
+      $this->spsarana_db->where($where);
+    }
+    if ($order != null) {
+      $this->spsarana_db->order_by($order, $sort);
+    }
+    if ($limit != null) {
+      $this->spsarana_db->limit($limit);
+    }
+
+    $query = $this->spsarana_db->get();
     return $query;
   }
 }

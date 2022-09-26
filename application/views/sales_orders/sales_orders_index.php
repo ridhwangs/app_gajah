@@ -11,7 +11,7 @@
      <div class="w3-top">
         <div class="w3-bar w3-light-grey">
             <button onclick="reloadList()" class="w3-button w3-left"><i class="fas fa-sync-alt"></i> Refresh</button>   
-            <button onclick="goTo('<?= site_url('sales_orders'); ?>')" class="w3-button w3-left">Sales Orders</button>      
+            <button onclick="goTo('<?= site_url('work_orders'); ?>')" class="w3-button w3-left">Work Orders</button>      
             <button class="w3-button w3-right" onclick="goTo('<?= site_url('doLogout'); ?>')"><i class="fas fa-sign-out-alt"></i> Logout</button>
             <button class="w3-button w3-right" onclick="goTo('<?= site_url('profile'); ?>')" class="w3-button w3-left"><i class="fas fa-user"></i> Profile</button>
         </div>
@@ -126,7 +126,7 @@
         <div class="w3-light-gray"  style="padding:5px; padding-bottom:10px;">
             <div class="w3-row">
               <div class="w3-half w3-container">
-                <form method="POST" action="<?= site_url('work_orders/doCari'); ?>" autocomplete="off">
+                <!-- <form method="POST" action="<?= site_url('work_orders/doCari'); ?>" autocomplete="off">
                     <table border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
                         <tr>
                             <td width="1px">Dari Tanggal</td>
@@ -156,17 +156,17 @@
                             </td>
                         </tr>
                     </table>
-                </form>
+                </form> -->
               </div>
               <div class="w3-half w3-container w3-right-align">
-                <table border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
+                <!-- <table border='0' width="100%" cellspacing="0" style="white-space: nowrap;">
                     <tr>
-                        <td >Masuk per Hari ini (MMKSI)</td>
+                        <td >Sales Orders per Hari ini (MMKSI)</td>
                         <td width="3%" class="w3-center">:</td>
                         <td width="5%"><b><?= $count_wo_mmksi ?></b></td>
                     </tr>
                     <tr>
-                        <td>Masuk per Hari ini (MFTBC)</td>
+                        <td>Sales Orders per Hari ini (MFTBC)</td>
                         <td style="border-bottom: thin solid;" class="w3-center">:</td>
                         <td style="border-bottom: thin solid;"><b><?= $count_wo_mftbc ?></b></td>
                     </tr>
@@ -175,7 +175,7 @@
                         <td class="w3-center">:</td>
                         <td><b><?= $count_wo_mmksi + $count_wo_mftbc ?></b></td>
                     </tr>
-                </table>
+                </table> -->
               </div>
             </div>
             
@@ -185,49 +185,32 @@
                     <?php
                     echo '<thead>
                             <th width="1%">No.</th>
-                            <th>Tgl Masuk</th>
-                            <th>Tgl Keluar</th>
-                            <th>Service Category</th>
-                            <th>*No WO</th>
+                            <th>Tgl Invoice</th>
+                            <th>Jatuh Tempo</th>
+                            <th>Konsumen</th>
                             <th>No Invoice</th>
-                            <th>Nama</th>
-                            <th width="1%">No Rangka</th>
-                            <th width="1%">No Polisi</th>
-                            <th>DPP</th>
-                            <th>PPN</th>
-                            <th>Grand Total</th>
-                            <th></th>
-                            <th width="1px"></th>
+                            <th>No DO</th>
+                            <th>Total</th>
+                            <th>Jenis SO</th>
                             <th width="1px"></th>
                         </thead>
                         <tbody>';
                         $no = 1;
                         foreach ($query_master as $key => $row) {
-                            if($row['tgl_keluar'] != '1970-01-01'){
-                                $tgl_keluar = date('d/m/Y', strtotime($row['tgl_keluar']));
-                            }else{
-                                $tgl_keluar = '-';
-                            }
                             if($row['kasir'] == 'TRUE'){
                                 $kasir = '<i class="fas fa-check" style="color:green;"></i>';
                             }else{
                                 $kasir = '<i class="fas fa-times" style="color:red;"></i>';
                             } 
-                            echo '<tr class="rowItem" onclick="goTo(\''. site_url('work_orders/print?id_master='.$row['id_master']).'\')" style="cursor:pointer">
+                            echo '<tr class="rowItem" onclick="goTo(\''. site_url('sales_orders/print?id_master='.$row['id_master']).'\')" style="cursor:pointer">
                                 <td>'.$no++.'.</td>
-                                <td class="w3-center">'.date('d/m/Y', strtotime($row['tgl_masuk'])).'</td>
-                                <td class="w3-center">'.$tgl_keluar.'</td>
-                                <td>'.str_replace('SPSR','',$row['service_category']).'</td>
-                                <td><b>'.substr($row['no_wo'], 7).'</b></td>
+                                <td class="w3-center">'.date('d/m/Y', strtotime($row['tgl_invoice'])).'</td>
+                                <td class="w3-center">'.date('d/m/Y', strtotime($row['jatuh_tempo'])).'</td>
+                                <td class="">'.$row['konsumen'].' </td>
                                 <td>'.substr($row['no_invoice'], 7).'</td>
-                                <td><a title="'.$row['nm_pelanggan'].'">'.word_limiter($row['nm_pelanggan'],3,'...').'</a></td>
-                                <td>'.$row['no_rangka'].'</td>
-                                <td>'.$row['no_polisi'].'</td>
-                                <td class="w3-right-align">'.number_format($row['dpp']).'</td>
-                                <td class="w3-right-align">'.number_format($row['ppn']).'</td>
-                                <td class="w3-right-align">'.number_format($row['grand_total']).'</td>
-                                 <td class="">'.$row['jenis_wo'].' </td>
-                                <td class="">'.$row['MethodOfPayment7'].' </td>
+                                <td>'.substr($row['no_do'], 7).'</td>
+                                <td class="w3-right-align">'.number_format($row['total_after']).'</td>
+                                <td class="">'.$row['jenis_so'].' </td>
                                 <td>'.$kasir.'</td>
                             </tr>';
 
