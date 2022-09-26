@@ -51,6 +51,9 @@
                                     <option value="no_polisi">3. No. Polisi</option>
                                     <option value="nm_pelanggan">4. Nama</option>
                                     <option value="no_rangka">5. No Rangka</option>
+									<option value="dpp">6. Total DPP</option>
+                                    <option value="ppn">7. Total PPN</option>
+                                    <option value="grand_total">8. Grand Total</option>
                                 </select>
                             </td>
                             <td class="w3-center">:</td>

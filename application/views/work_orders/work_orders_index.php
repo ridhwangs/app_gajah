@@ -1,5 +1,4 @@
 <?php $this->load->view('template/header'); ?>
-<?php $dir = getenv("HOMEDRIVE") . getenv("HOMEPATH").'\Downloads'; ?>
 <style>
     body{
         background-color: #34495e;
@@ -16,113 +15,7 @@
             <button class="w3-button w3-right" onclick="goTo('<?= site_url('profile'); ?>')" class="w3-button w3-left"><i class="fas fa-user"></i> Profile</button>
         </div>
     </div>
-    <div class="w3-panel">
-        <div class="w3-responsive w3-white" style="margin-top: 40px;">
-            <table class="w3-hoverable w3-small" width="100%">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th width="1px"></th>
-                        <th width="1px"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    // error_reporting(0);
-                    // Opens directory
-                    $myDirectory = opendir($dir);
-
-                    // Gets each entry
-                    while ($entryName = readdir($myDirectory)) {
-                        $dirArray[] = $entryName;
-                    }
-
-                    // Finds extensions of files
-                    function findexts($filename) {
-                        $filename = strtolower($filename);
-                        $exts = explode("[/\\.]", $filename);
-                        $n = count($exts) - 1;
-                        $exts = $exts[$n];
-                        return $exts;
-                    }
-
-                    // Closes directory
-                    closedir($myDirectory);
-
-                    // Counts elements in array
-                    $indexCount = count($dirArray);
-
-                    // Sorts files
-                    sort($dirArray);
-
-                    // Loops through the array of files
-                    for ($index = 0; $index < $indexCount; $index++) {
-                        // Allows ./?hidden to show hidden files
-                        if ($_SERVER['QUERY_STRING'] == "hidden") {
-                            $hide = "";
-                            $ahref = $dir;
-                            $atext = "Hide";
-                        } else {
-                            $hide = ".";
-                            $ahref = "./?hidden";
-                            $atext = "Show";
-                        }
-
-                        if (substr($dirArray[$index], 0, 1) != $hide) {
-
-                            // Gets File Names
-                            $name = $dirArray[$index];
-                            $namehref = str_replace('\\','\\\\', $dir).'\\\\'.$dirArray[$index];
-
-                            // Gets Extensions 
-                            $extn = pathinfo($dirArray[$index], PATHINFO_EXTENSION);
-
-                            // Gets file size 
-
-                            $size = number_format(@filesize($dir . $dirArray[$index]));
-
-                            // Gets Date Modified Data
-                            $modtime = date("M j Y g:i A", @filemtime($dir . $dirArray[$index]));
-                            $timekey = date("YmdHis", @filemtime($dir . $dirArray[$index]));
-                            // Prettifies File Types, add more to suit your needs.
-                            $extn = strtoupper($extn) . " File";
-
-                            // Separates directories
-                            if (is_dir($dirArray[$index])) {
-                                $extn = "&lt;Directory&gt;";
-                                $size = "&lt;Directory&gt;";
-                                $class = "dir";
-                            } else {
-                                $class = "file";
-                            }
-
-                            // Cleans up . and .. directories 
-                            if ($name == ".") {
-                                $name = ". (Current Directory)";
-                                $extn = "&lt;System Dir&gt;";
-                            }
-                            if ($name == "..") {
-                                $name = ".. (Parent Directory)";
-                                $extn = "&lt;System Dir&gt;";
-                            }
-                            if($extn == "XML File"){
-                                   // Print 'em
-                            echo '
-                            <tr ondblclick="goTo(\''.site_url('work_orders/read/xml?url='.$namehref).'\')" class='.$class.' style="cursor:pointer;">
-                                <td><a onclick="goTo(\''.site_url('work_orders/read/xml?url='.$namehref).'\')" href="#">'.$name.'</a></td>
-                                <td><a class="w3-button w3-white w3-border w3-tiny w3-border-blue" onclick="goTo(\''.site_url('work_orders/read/xml?url='.$namehref).'\')" href="javascript:void(0)"><i class="fas fa-upload"></i> Proses</a></td>
-                                    <td><a class="w3-button w3-white w3-border w3-tiny w3-border-red" onclick="goTo(\''.site_url('work_orders/delete/xml?url='.$namehref).'\')" href="javascript:void(0)"><i class="fas fa-trash"></i></a></td>
-                            </tr>';
-                            }
-                         
-                        }
-                    }
-                    ?>
-                </tbody>
-            </table>  
-        </div>
-    </div>
-    <div class="w3-panel">
+    <div class="w3-panel" style="padding-top:40px;">
         <div class="w3-light-gray"  style="padding:5px; padding-bottom:10px;">
             <div class="w3-row">
               <div class="w3-half w3-container">
@@ -147,6 +40,9 @@
                                     <option value="no_polisi">3. No. Polisi</option>
                                     <option value="nm_pelanggan">4. Nama</option>
                                     <option value="no_rangka">5. No Rangka</option>
+                                    <option value="dpp">6. Total DPP</option>
+                                    <option value="ppn">7. Total PPN</option>
+                                    <option value="grand_total">8. Grand Total</option>
                                 </select>
                             </td>
                             <td class="w3-center">:</td>
