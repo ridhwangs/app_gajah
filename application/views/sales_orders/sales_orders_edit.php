@@ -12,7 +12,7 @@
      <div id="cover-spin"></div>
 <style type="text/css">
     body {
-        background: rgb(204,204,204); 
+        background-color: #34495e;
         -webkit-print-color-adjust: exact;
         top:0;
         font-size: 9pt;
@@ -73,10 +73,9 @@
 </style>
         <div class="w3-top no-print">
             <div class="w3-bar w3-light-grey">
-                <a href="javascript:void(0);" onclick="goTo('<?= site_url('sales_orders'); ?>')" class="w3-button w3-left"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
+                <a href="javascript:void(0);" onclick="goTo('<?= site_url('sales_orders/print?id_master='.$this->input->get('id_master')); ?>')" class="w3-button w3-left"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
                 
-                <button style="position:fixed;right:0;" class="w3-button w3-right" onclick="doPrint();"><i class="fas fa-print"></i> Print</button>
-                <a href="javascript:void(0);" onclick="goTo('<?= site_url('sales_orders/edit?id_master='.$this->input->get('id_master')); ?>')" class="w3-button w3-left"><i class="fas fa-pencil-alt"></i> Edit</a>
+                <button style="position:fixed;right:0;" class="w3-button w3-right" type="submit" form="form-edit"><i class="fas fa-save"></i> Simpan</button>
             </div>
         </div>
    
@@ -114,6 +113,8 @@
             </tr>
         </thead>
 		<tbody>
+            <form method="POST" id="form-edit" autocomplete="off" action="<?= site_url('sales_orders/update/master'); ?>">
+            <input type="hidden" value="<?= $row_master->id_master; ?>" name="id_master">
 			<tr>
 				<td colspan="7" style="padding:4px;"></td>
 			</tr>
@@ -121,13 +122,13 @@
 				<td colspan="1">Nama <span style="float:right;">:</span></td>
 				<td colspan="3"><?= $row_master->konsumen; ?></td>
                 <td colspan="1">Tanggal Invoice <span style="float:right;">:</span></td>
-                <td colspan="2"><?= $row_master->tgl_invoice; ?></td>
+                <td colspan="2"><input type="date" name="tgl_invoice" style="font-size:8pt;" id="tgl_invoice" value="<?= $row_master->tgl_invoice; ?>"></td>
 			</tr>
 			<tr>
 				<td colspan="1">Alamat <span style="float:right;">:</span></td>
 				<td colspan="3"><?= $row_master->address; ?></td>
                 <td colspan="1">Jatuh Tempo <span style="float:right;">:</span></td>
-                <td colspan="2"><?= $row_master->jatuh_tempo; ?></td>
+                <td colspan="2"><input type="date" name="jatuh_tempo" style="font-size:8pt;" id="jatuh_tempo" value="<?= $row_master->jatuh_tempo; ?>"></td>
 			</tr>
             <tr>
 				<td colspan="1">Kota & Provinsi <span style="float:right;">:</span> </td>
@@ -145,9 +146,10 @@
 				<td colspan="1"></td>
 				<td colspan="3"></td>
                 <td colspan="1">PO external<span style="float:right;">:</span></td>
-                <td colspan="2"><?= $row_master->no_po_konsumen; ?></td>
+                <td colspan="2"><input type="text" name="no_po_konsumen" id="no_po_konsumen" value="<?= $row_master->no_po_konsumen; ?>" style="font-size:8pt;width:90%;" autofocus></td>
 			</tr>
-			<tr>
+            
+            <tr>
 				<td colspan="7" style="padding:4px;"></td>
 			</tr>
 			<tr>
@@ -189,13 +191,13 @@
             <tr>
                 <td colspan="4" style=""></td>
                 <td colspan="2" style="">PPN</td>
-                <td colspan="1" style="" class="w3-right-align"><?= number_format($row_master->ppn) ?></td>
+                <td colspan="1" style="" class="w3-right-align"><input type="number" name="ppn" min="0" style="font-size:8pt;float:right;" id="ppn" value="<?= $row_master->ppn; ?>"></td>
             </tr>
             <?php endif; ?>
             <tr>
                 <td colspan="4" style=""></td>
                 <td colspan="2" style="">Materai</td>
-                <td colspan="1" style="" class="w3-right-align"><?= number_format($row_master->sum_MateraiValue) ?></td>
+                <td colspan="1" style="" class="w3-right-align"><input type="number" name="sum_MateraiValue" style="font-size:8pt;float:right;" id="sum_MateraiValue" value="<?= $row_master->sum_MateraiValue; ?>"></td>
             </tr>
             <tr>
                 <td colspan="4" style=""></td>
@@ -205,9 +207,9 @@
             <tr>
                 <td colspan="4" style=""></td>
                 <td colspan="2" style="border-top:thin dashed;"><b class="w3-wide" style="font-size:12pt;">Grand Total</b></td>
-                <td colspan="1" style="border-top:thin dashed;" class="w3-right-align"><b style="font-size:12pt;"><?= number_format($row_master->grand_total_after) ?></b></td>
+                <td colspan="1" style="border-top:thin dashed;" class="w3-right-align"><b style="font-size:12pt;"><?= number_format($row_master->total_after) ?></b></td>
             </tr>    
-		
+            </form>    
 		</tbody>
 		<tfoot>
 			<tr>
@@ -249,7 +251,7 @@
 				<td align="center" style="border-bottom: thin solid;"></td>
 				<td></td>
 				<td></td>
-				<td align="center"></td>
+				<td align="center" ></td>
 				<td></td>
 			</tr>
 		</tfoot>		

@@ -296,7 +296,14 @@ class Work_orders extends CI_Controller {
 						}  
                     }else if($xml->Tablix1){
                         $tipe = 'sales_orders';
-                        
+                        $total_after = preg_replace( '/[^0-9]/', '', $xml->Tablix8->attributes()->Textbox139);
+                        $ppn = $total_after * 11 / 100;
+                        $masterai = 0;
+                        if($total_after >= 5000000){
+                            $masterai = 10000;
+                        }
+                        $grand_total_after = $total_after + $ppn + $materai;
+                        $terbilang = number_to_words($grand_total_after);
                         $data_master = [
                             'konsumen' => (string)$xml->Tablix1->xts_accountreceivableinvoice_Collection->xts_accountreceivableinvoice->Tablix6->attributes()->Textbox117,
                             'address' => (string)$xml->Tablix1->xts_accountreceivableinvoice_Collection->xts_accountreceivableinvoice->Tablix6->attributes()->CUST_address1_line1,
@@ -310,10 +317,12 @@ class Work_orders extends CI_Controller {
                             'xts_deliveryordernumber' => (string)$xml->Tablix2->attributes()->xts_deliveryordernumber,
                             'no_do' => (string)$xml->Tablix2->attributes()->Textbox78,
                             'total_before' => preg_replace( '/[^0-9]/', '', $xml->Tablix8->attributes()->Textbox134),
-                            'sum_MateraiValue' => preg_replace( '/[^0-9]/', '', $xml->Tablix8->attributes()->sum_MateraiValue),
+                            'sum_MateraiValue' => $masterai,
                             'sum_AdministrasiValue' => preg_replace( '/[^0-9]/', '', $xml->Tablix8->attributes()->sum_AdministrasiValue),
-                            'total_after' => preg_replace( '/[^0-9]/', '', $xml->Tablix8->attributes()->Textbox139),
-                            'terbilang' => (string)$xml->Tablix9->attributes()->Textbox13,
+                            'total_after' => $total_after,
+                            'ppn' => $ppn,
+                            'grand_total_after' => $grand_total_after,
+                            'terbilang' => $terbilang,
                             'note_rek' => (string)$xml->Tablix10->attributes()->Textbox140,
                             'kasir' => 'FALSE',
                             'jenis_so' => 'WITH TAX',

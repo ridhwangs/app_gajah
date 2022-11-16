@@ -38,6 +38,35 @@ class Sales_orders extends CI_Controller {
         $this->load->view('sales_orders/sales_orders_index', $data);
     }
 
+    public function update($params)
+    {
+        switch ($params) {
+            case 'master':
+                $where = [
+                    'id_master' => $this->input->post('id_master')
+                ];
+                $master = $this->crud_model->read('master_sales_order', $where)->row();
+                $grand_total_after = $master->total_after + $this->input->post('ppn') + $this->input->post('sum_MateraiValue');
+                $data = [
+                    'tgl_invoice' => $this->input->post('tgl_invoice'),
+                    'jatuh_tempo' => $this->input->post('jatuh_tempo'),
+                    'no_po_konsumen' => $this->input->post("no_po_konsumen"),
+                    'ppn' => $this->input->post('ppn'),
+                    'sum_MateraiValue' => $this->input->post('sum_MateraiValue'),
+                    'grand_total_after' => $grand_total_after,
+                    'terbilang' => number_to_words($grand_total_after) .' Rupiah',
+                ];
+                $this->crud_model->update('master_sales_order', $where, $data);
+                redirect('sales_orders/print?id_master='. $where['id_master']);
+                die();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
     public function print() {
         $data = array(
             'page_header' => '',
@@ -48,5 +77,17 @@ class Sales_orders extends CI_Controller {
             'dicetak_oleh' => $this->userInfo->nama,
         );
         $this->load->view('sales_orders/sales_orders_print', $data);
+    }
+
+    public function edit() {
+        $data = array(
+            'page_header' => '',
+            'id_master' => $this->input->get('id_master'),
+            'row_master' => $this->crud_model->read('master_sales_order',['id_master' => $this->input->get('id_master')],'created_at','DESC')->row(),
+            'query_details' => $this->sales_orders_model->read(['details_sales_order.id_master' => $this->input->get('id_master')])->result_array(),
+            'count_details' => $this->sales_orders_model->read(['details_sales_order.id_master' => $this->input->get('id_master')])->num_rows(),
+            'dicetak_oleh' => $this->userInfo->nama,
+        );
+        $this->load->view('sales_orders/sales_orders_edit', $data);
     }
 }
